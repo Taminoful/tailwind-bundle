@@ -24,12 +24,7 @@ Install the bundle & initialize your app with two commands:
     $ composer require symfonycasts/tailwind-bundle
     $ php bin/console tailwind:init
 
-Done! This will create a ``tailwind.config.js`` file and make sure your
-``assets/styles/app.css`` contains the Tailwind directives.
-
-.. note::
-
-    If using Tailwind CSS v4+, ``tailwind.config.js`` is not created or used.
+This will ask you a few questions about your setup, and get things ready to go.
 
 Usage
 -----
