@@ -26,3 +26,7 @@ Symfony (and learn a bucket-load) by grabbing a subscription to [SymfonyCasts](h
 ## License
 
 MIT License (MIT): see the [License File](LICENSE) for more details.
+
+## Security Policy
+
+If you discover a security vulnerability, please do not open a public issue or pull request. Instead, please review this repository's [Security Policy](https://github.com/SymfonyCasts/tailwind-bundle/security) for instructions on how to report it responsibly.
