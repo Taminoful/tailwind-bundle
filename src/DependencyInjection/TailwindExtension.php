@@ -42,6 +42,9 @@ class TailwindExtension extends Extension implements ConfigurationInterface
             ->replaceArgument(7, $config['binary_platform'])
             ->replaceArgument(8, $config['process_timeout'])
         ;
+        $container->findDefinition('tailwind.command.init')
+            ->replaceArgument(1, $config['input_css'])
+        ;
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): ?ConfigurationInterface
