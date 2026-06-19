@@ -20,6 +20,11 @@ class TailwindTestKernel extends Kernel
 {
     use MicroKernelTrait;
 
+    public function __construct(string $environment, bool $debug, private readonly array $tailwindConfig = [])
+    {
+        parent::__construct($environment, $debug);
+    }
+
     public function registerBundles(): array
     {
         return [
@@ -45,7 +50,7 @@ class TailwindTestKernel extends Kernel
             ],
         ]);
 
-        $container->loadFromExtension('symfonycasts_tailwind', [
+        $container->loadFromExtension('symfonycasts_tailwind', $this->tailwindConfig ?: [
             'input_css' => [__DIR__.'/assets/styles/app.css'],
             'binary_version' => 'v3.4.17',
         ]);
