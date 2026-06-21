@@ -249,6 +249,36 @@ To use a different version, adjust the ``binary_version`` option:
     symfonycasts_tailwind:
         binary_version: 'v3.3.0'
 
+Updating Tailwind
+-----------------
+
+To update to the latest Tailwind CSS release *within your current major version*,
+run the ``tailwind:update`` command:
+
+.. code-block:: terminal
+
+    $ php bin/console tailwind:update
+
+This finds the latest release matching your current major version (e.g. if you're
+on ``v3.3.0`` it will look for the latest ``3.x`` release) and updates the
+``binary_version`` option in ``config/packages/symfonycasts_tailwind.yaml`` for you.
+The next time you run ``tailwind:build``, the new binary is downloaded automatically.
+
+.. note::
+
+    If a ``tailwind:build --watch`` process (or worker) is already running, restart
+    it after updating - it keeps using the binary it started with until then.
+
+.. note::
+
+    To move to a *new* major version (e.g. from ``3.x`` to ``4.x``), set the
+    ``binary_version`` option manually - see `Using a Different Binary Version`_.
+
+.. note::
+
+    If you're managing your own binary (the ``binary`` option is set), this
+    command can't update it for you - update it manually instead.
+
 Using a Different Binary Platform
 ---------------------------------
 

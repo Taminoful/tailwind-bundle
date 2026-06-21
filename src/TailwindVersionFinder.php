@@ -26,8 +26,18 @@ final class TailwindVersionFinder
         $this->httpClient = $httpClient ?? HttpClient::create();
     }
 
-    public function latestVersionFor(int $majorVersion): string
+    /**
+     * Finds the latest release sharing the major version of the given
+     * version string (e.g. "4", "v4.2.0", "3.3" all resolve their major).
+     */
+    public function latestVersionFor(string $version): string
     {
+        if (!preg_match('/^v?(\d+)/', $version, $matches)) {
+            throw new \InvalidArgumentException(\sprintf('Cannot parse major version from "%s".', $version));
+        }
+
+        $majorVersion = (int) $matches[1];
+
         foreach ($this->tags() as $tag) {
             if (str_starts_with($tag, "v$majorVersion.")) {
                 return $tag;
