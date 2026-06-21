@@ -14,7 +14,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $container): void {
     $container->services()
-        ->set('tailwind.builder', TailwindBuilder::class)
+        ->set('.tailwind.builder', TailwindBuilder::class)
             ->args([
                 param('kernel.project_dir'),
                 abstract_arg('path to source Tailwind CSS file'),
@@ -27,34 +27,34 @@ return static function (ContainerConfigurator $container): void {
                 abstract_arg('process timeout in seconds'),
             ])
 
-        ->set('tailwind.version_finder', TailwindVersionFinder::class)
+        ->set('.tailwind.version_finder', TailwindVersionFinder::class)
 
-        ->set('tailwind.command.build', TailwindBuildCommand::class)
+        ->set('.tailwind.command.build', TailwindBuildCommand::class)
             ->args([
-                service('tailwind.builder'),
+                service('.tailwind.builder'),
             ])
             ->tag('console.command')
 
-        ->set('tailwind.command.init', TailwindInitCommand::class)
+        ->set('.tailwind.command.init', TailwindInitCommand::class)
             ->args([
-                service('tailwind.version_finder'),
+                service('.tailwind.version_finder'),
                 abstract_arg('path to source Tailwind CSS file'),
                 param('kernel.project_dir'),
             ])
             ->tag('console.command')
 
-        ->set('tailwind.command.update', TailwindUpdateCommand::class)
+        ->set('.tailwind.command.update', TailwindUpdateCommand::class)
             ->args([
-                service('tailwind.version_finder'),
+                service('.tailwind.version_finder'),
                 param('kernel.project_dir'),
                 abstract_arg('path to tailwind binary'),
                 abstract_arg('Tailwind binary version'),
             ])
             ->tag('console.command')
 
-        ->set('tailwind.css_asset_compiler', TailwindCssAssetCompiler::class)
+        ->set('.tailwind.css_asset_compiler', TailwindCssAssetCompiler::class)
             ->args([
-                service('tailwind.builder'),
+                service('.tailwind.builder'),
                 abstract_arg('strict mode'),
             ])
             ->tag('asset_mapper.compiler', [

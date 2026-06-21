@@ -18,9 +18,9 @@ use Symfony\Component\Process\Process;
  *
  * @author Ryan Weaver <ryan@symfonycasts.com>
  *
- * @final
+ * @internal
  */
-class TailwindBuilder
+final class TailwindBuilder
 {
     private ?SymfonyStyle $output = null;
     private readonly array $inputPaths;

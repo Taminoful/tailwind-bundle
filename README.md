@@ -21,6 +21,7 @@ Symfony (and learn a bucket-load) by grabbing a subscription to [SymfonyCasts](h
 ## Credits
 
 - [Ryan Weaver](https://github.com/weaverryan)
+- [Kevin Bond](https://github.com/kbond)
 - [All Contributors](../../contributors)
 
 ## License

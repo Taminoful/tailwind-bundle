@@ -12,22 +12,36 @@ namespace Symfonycasts\TailwindBundle\Tests\AssetMapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfonycasts\TailwindBundle\AssetMapper\TailwindCssAssetCompiler;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindCssAssetCompilerTest extends TestCase
 {
+    private string $varDir;
+
+    protected function setUp(): void
+    {
+        $this->varDir = __DIR__.'/../fixtures/var/tailwind';
+        $fs = new Filesystem();
+        $fs->mkdir($this->varDir);
+        $fs->dumpFile($this->varDir.'/app.built.css', 'output content from Tailwind');
+    }
+
+    protected function tearDown(): void
+    {
+        (new Filesystem())->remove($this->varDir);
+    }
+
     public function testCompile(): void
     {
-        $builder = $this->createMock(TailwindBuilder::class);
-        $builder->expects($this->any())
-            ->method('getInputCssPaths')
-            ->willReturn([realpath(__DIR__.'/../fixtures/assets/styles/app.css')]);
-        $builder->expects($this->once())
-            ->method('getInternalOutputCssPath');
-        $builder->expects($this->once())
-            ->method('getOutputCssContent')
-            ->willReturn('output content from Tailwind');
+        $projectDir = realpath(__DIR__.'/../fixtures');
+        $builder = new TailwindBuilder(
+            $projectDir,
+            [$projectDir.'/assets/styles/app.css'],
+            $this->varDir,
+            binaryVersion: 'v3.4.17',
+        );
 
         $compiler = new TailwindCssAssetCompiler($builder);
         $asset1 = new MappedAsset('styles/other.css', __DIR__.'/../fixtures/assets/styles/other.css');
