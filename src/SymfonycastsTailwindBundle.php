@@ -37,7 +37,7 @@ class SymfonycastsTailwindBundle extends AbstractBundle
                     ->defaultNull()
                 ->end()
                 ->scalarNode('binary_version')
-                    ->info('Tailwind CLI version to download - null means the latest version')
+                    ->info('Tailwind CLI version to download - required unless "binary" is set (run "tailwind:init" to configure)')
                     ->defaultNull()
                     ->beforeNormalization()
                         ->ifString()
