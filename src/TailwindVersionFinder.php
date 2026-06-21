@@ -15,7 +15,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * Finds the latest Tailwind CSS version by major version.
  *
- * @author Kevin Bond <ryan@symfonycasts.com>
+ * @author Kevin Bond <kevinbond@gmail.com>
+ *
+ * @internal
  */
 final class TailwindVersionFinder
 {

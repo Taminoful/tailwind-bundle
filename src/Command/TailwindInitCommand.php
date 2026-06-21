@@ -16,11 +16,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 use Symfonycasts\TailwindBundle\TailwindVersionFinder;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: 'tailwind:init',
     description: 'Initializes Tailwind CSS for your project',
 )]
-class TailwindInitCommand extends TailwindConfigCommand
+final class TailwindInitCommand extends TailwindConfigCommand
 {
     public function __construct(
         private TailwindVersionFinder $versionFinder,

@@ -15,11 +15,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfonycasts\TailwindBundle\TailwindVersionFinder;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: 'tailwind:update',
     description: 'Updates the Tailwind CSS binary to the latest version within the current major',
 )]
-class TailwindUpdateCommand extends TailwindConfigCommand
+final class TailwindUpdateCommand extends TailwindConfigCommand
 {
     public function __construct(
         private TailwindVersionFinder $versionFinder,

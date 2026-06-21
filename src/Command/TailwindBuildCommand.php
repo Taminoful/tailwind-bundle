@@ -18,11 +18,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: 'tailwind:build',
     description: 'Builds the Tailwind CSS assets.',
 )]
-class TailwindBuildCommand extends Command
+final class TailwindBuildCommand extends Command
 {
     public function __construct(
         private TailwindBuilder $tailwindBuilder,

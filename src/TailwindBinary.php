@@ -18,8 +18,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * Wraps and downloads the tailwindcss binary.
  *
  * @author Ryan Weaver <ryan@symfonycasts.com>
+ *
+ * @internal
  */
-class TailwindBinary
+final class TailwindBinary
 {
     private const DEFAULT_VERSION = 'v3.4.17';
 

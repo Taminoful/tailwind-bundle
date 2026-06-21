@@ -47,7 +47,7 @@ class TailwindTestKernel extends Kernel
         parent::boot();
 
         if (null !== $this->versionFinderReleases) {
-            $this->container->set('tailwind.version_finder', new TailwindVersionFinder($this->mockHttpClient()));
+            $this->container->set('.tailwind.version_finder', new TailwindVersionFinder($this->mockHttpClient()));
         }
     }
 
@@ -83,7 +83,7 @@ class TailwindTestKernel extends Kernel
 
         if (null !== $this->versionFinderReleases) {
             // declared synthetic so the real instance (with a mock client) can be set in boot()
-            $container->register('tailwind.version_finder', TailwindVersionFinder::class)
+            $container->register('.tailwind.version_finder', TailwindVersionFinder::class)
                 ->setSynthetic(true)
                 ->setPublic(true);
         }

@@ -72,11 +72,11 @@ class SymfonycastsTailwindBundle extends AbstractBundle
 
         $strictMode = $config['strict_mode'] ?? ('test' !== $builder->getParameter('kernel.environment'));
 
-        $builder->findDefinition('tailwind.css_asset_compiler')
+        $builder->findDefinition('.tailwind.css_asset_compiler')
             ->replaceArgument(1, $strictMode)
         ;
 
-        $builder->findDefinition('tailwind.builder')
+        $builder->findDefinition('.tailwind.builder')
             ->replaceArgument(1, $config['input_css'])
             ->replaceArgument(3, $config['binary'])
             ->replaceArgument(4, $config['binary_version'])
@@ -86,11 +86,11 @@ class SymfonycastsTailwindBundle extends AbstractBundle
             ->replaceArgument(8, $config['process_timeout'])
         ;
 
-        $builder->findDefinition('tailwind.command.init')
+        $builder->findDefinition('.tailwind.command.init')
             ->replaceArgument(1, $config['input_css'])
         ;
 
-        $builder->findDefinition('tailwind.command.update')
+        $builder->findDefinition('.tailwind.command.update')
             ->replaceArgument(2, $config['binary'])
             ->replaceArgument(3, $config['binary_version'])
         ;

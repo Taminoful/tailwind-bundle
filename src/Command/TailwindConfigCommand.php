@@ -12,6 +12,9 @@ namespace Symfonycasts\TailwindBundle\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @internal
+ */
 abstract class TailwindConfigCommand extends Command
 {
     public function __construct(

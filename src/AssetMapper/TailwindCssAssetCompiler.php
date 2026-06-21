@@ -16,8 +16,10 @@ use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 /**
  * Intercepts the "input" Tailwind CSS file and changes its contents to the built version.
+ *
+ * @internal
  */
-class TailwindCssAssetCompiler implements AssetCompilerInterface
+final class TailwindCssAssetCompiler implements AssetCompilerInterface
 {
     public function __construct(private TailwindBuilder $tailwindBuilder, private bool $strictMode = true)
     {
