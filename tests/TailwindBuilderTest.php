@@ -43,29 +43,6 @@ class TailwindBuilderTest extends TestCase
         }
     }
 
-    /**
-     * @group legacy
-     */
-    public function testIntegrationWithDefaultOptions(): void
-    {
-        $builder = new TailwindBuilder(
-            __DIR__.'/fixtures',
-            [__DIR__.'/fixtures/assets/styles/app.css'],
-            __DIR__.'/fixtures/var/tailwind',
-            null,
-            null,
-            __DIR__.'/fixtures/tailwind.config.js'
-        );
-        $process = $builder->runBuild(watch: false, poll: false, minify: false);
-        $process->wait();
-
-        $this->assertTrue($process->isSuccessful());
-        $this->assertFileExists(__DIR__.'/fixtures/var/tailwind/app.built.css');
-
-        $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/app.built.css');
-        $this->assertStringContainsString("body {\n  background-color: red;\n}", $outputFileContents, 'The output file should contain non-minified CSS.');
-    }
-
     public function testIntegrationWithV4(): void
     {
         $builder = new TailwindBuilder(

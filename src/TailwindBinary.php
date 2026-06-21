@@ -23,8 +23,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 final class TailwindBinary
 {
-    private const DEFAULT_VERSION = 'v3.4.17';
-
     private HttpClientInterface $httpClient;
 
     public function __construct(
@@ -37,17 +35,6 @@ final class TailwindBinary
         private string $binaryPlatform = 'auto',
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
-
-        if (!$this->binaryVersion && !$this->binaryPath) {
-            trigger_deprecation(
-                'symfonycasts/tailwind-bundle',
-                '0.8',
-                'Not specifying a "binary" or "binary_version" is deprecated. %s is being used.',
-                self::DEFAULT_VERSION,
-            );
-
-            $this->binaryVersion = self::DEFAULT_VERSION;
-        }
 
         if ($this->binaryVersion && $this->binaryPath) {
             $this->binaryVersion = null;
@@ -96,6 +83,10 @@ final class TailwindBinary
     {
         if ($this->binaryPath) {
             return $this->binaryPath;
+        }
+
+        if (!$this->binaryVersion) {
+            throw new \LogicException('You must specify a "binary" or "binary_version" in your symfonycasts_tailwind config (or run "tailwind:init").');
         }
 
         $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName($this->getRawVersion(), $this->binaryPlatform);

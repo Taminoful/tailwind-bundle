@@ -90,6 +90,36 @@ class TailwindBinaryTest extends TestCase
         );
     }
 
+    public function testCanBeConstructedWithoutBinaryOrVersion(): void
+    {
+        // the bundle must be usable before "tailwind:init" is run, so
+        // construction must not require a binary or version
+        $binary = new TailwindBinary(__DIR__.'/fixtures/download', __DIR__, null, null, null, new MockHttpClient());
+
+        $this->assertInstanceOf(TailwindBinary::class, $binary);
+    }
+
+    /**
+     * @dataProvider publicInstanceMethodProvider
+     */
+    public function testThrowsWhenUsedWithoutBinaryOrVersion(\Closure $call): void
+    {
+        $binary = new TailwindBinary(__DIR__.'/fixtures/download', __DIR__, null, null, null, new MockHttpClient());
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('You must specify a "binary" or "binary_version"');
+
+        $call($binary);
+    }
+
+    public static function publicInstanceMethodProvider(): iterable
+    {
+        yield 'createProcess' => [static fn (TailwindBinary $b) => $b->createProcess()];
+        yield 'getVersion' => [static fn (TailwindBinary $b) => $b->getVersion()];
+        yield 'getRawVersion' => [static fn (TailwindBinary $b) => $b->getRawVersion()];
+        yield 'isV4' => [static fn (TailwindBinary $b) => $b->isV4()];
+    }
+
     public function platformAndVersionProvider(): iterable
     {
         yield ['3.4.17', 'linux-arm64', 'tailwindcss-linux-arm64'];
