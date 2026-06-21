@@ -5,8 +5,8 @@ use Symfonycasts\TailwindBundle\AssetMapper\TailwindCssAssetCompiler;
 use Symfonycasts\TailwindBundle\Command\TailwindBuildCommand;
 use Symfonycasts\TailwindBundle\Command\TailwindInitCommand;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
-
 use Symfonycasts\TailwindBundle\TailwindVersionFinder;
+
 use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
