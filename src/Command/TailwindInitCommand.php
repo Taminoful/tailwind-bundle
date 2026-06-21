@@ -10,11 +10,9 @@
 namespace Symfonycasts\TailwindBundle\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Yaml\Yaml;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 use Symfonycasts\TailwindBundle\TailwindVersionFinder;
 
@@ -22,14 +20,14 @@ use Symfonycasts\TailwindBundle\TailwindVersionFinder;
     name: 'tailwind:init',
     description: 'Initializes Tailwind CSS for your project',
 )]
-class TailwindInitCommand extends Command
+class TailwindInitCommand extends TailwindConfigCommand
 {
     public function __construct(
         private TailwindVersionFinder $versionFinder,
         private array $inputCss,
-        private string $rootDir,
+        string $rootDir,
     ) {
-        parent::__construct();
+        parent::__construct($rootDir);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -51,7 +49,7 @@ class TailwindInitCommand extends Command
             $bundleConfig['symfonycasts_tailwind']['binary_version'] = $latestVersion;
         }
 
-        file_put_contents($this->bundleConfigFile(), Yaml::dump($bundleConfig));
+        $this->writeBundleConfig($bundleConfig);
 
         $builder = new TailwindBuilder(
             $this->rootDir,
@@ -146,23 +144,5 @@ class TailwindInitCommand extends Command
         }
 
         file_put_contents($inputFile, $tailwindDirectives."\n\n".$contents);
-    }
-
-    private function bundleConfigFile(): string
-    {
-        return $this->rootDir.'/config/packages/symfonycasts_tailwind.yaml';
-    }
-
-    private function bundleConfig(): array
-    {
-        if (!class_exists(Yaml::class)) {
-            throw new \RuntimeException('You are using a non-standard Symfony setup. You will need to initialize this bundle manually.');
-        }
-
-        if (!file_exists($this->bundleConfigFile())) {
-            return [];
-        }
-
-        return Yaml::parseFile($this->bundleConfigFile());
     }
 }

@@ -89,5 +89,10 @@ class SymfonycastsTailwindBundle extends AbstractBundle
         $builder->findDefinition('tailwind.command.init')
             ->replaceArgument(1, $config['input_css'])
         ;
+
+        $builder->findDefinition('tailwind.command.update')
+            ->replaceArgument(2, $config['binary'])
+            ->replaceArgument(3, $config['binary_version'])
+        ;
     }
 }

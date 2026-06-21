@@ -4,6 +4,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symfonycasts\TailwindBundle\AssetMapper\TailwindCssAssetCompiler;
 use Symfonycasts\TailwindBundle\Command\TailwindBuildCommand;
 use Symfonycasts\TailwindBundle\Command\TailwindInitCommand;
+use Symfonycasts\TailwindBundle\Command\TailwindUpdateCommand;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 use Symfonycasts\TailwindBundle\TailwindVersionFinder;
 
@@ -39,6 +40,15 @@ return static function (ContainerConfigurator $container): void {
                 service('tailwind.version_finder'),
                 abstract_arg('path to source Tailwind CSS file'),
                 param('kernel.project_dir'),
+            ])
+            ->tag('console.command')
+
+        ->set('tailwind.command.update', TailwindUpdateCommand::class)
+            ->args([
+                service('tailwind.version_finder'),
+                param('kernel.project_dir'),
+                abstract_arg('path to tailwind binary'),
+                abstract_arg('Tailwind binary version'),
             ])
             ->tag('console.command')
 

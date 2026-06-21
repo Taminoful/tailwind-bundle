@@ -16,9 +16,9 @@ use Symfonycasts\TailwindBundle\TailwindVersionFinder;
 class TailwindVersionFinderTest extends TestCase
 {
     /**
-     * @dataProvider majorVersionProvider
+     * @dataProvider versionProvider
      */
-    public function testGetLatestVersion(int $majorVersion): void
+    public function testGetLatestVersion(string $version, int $expectedMajor): void
     {
         $options = [];
 
@@ -27,17 +27,26 @@ class TailwindVersionFinderTest extends TestCase
         }
 
         $versionDetector = new TailwindVersionFinder(HttpClient::create($options));
-        $latestVersion = $versionDetector->latestVersionFor($majorVersion);
+        $latestVersion = $versionDetector->latestVersionFor($version);
 
-        $this->assertStringStartsWith('v'.$majorVersion.'.', $latestVersion);
+        $this->assertStringStartsWith('v'.$expectedMajor.'.', $latestVersion);
     }
 
-    public static function majorVersionProvider(): array
+    public static function versionProvider(): array
     {
         return [
-            [2],
-            [3],
-            [4],
+            'major only' => ['2', 2],
+            'v-prefixed major' => ['v3', 3],
+            'full version' => ['v4.2.0', 4],
+            'partial version' => ['3.3', 3],
         ];
+    }
+
+    public function testThrowsOnUnparsableVersion(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot parse major version from "nope".');
+
+        (new TailwindVersionFinder())->latestVersionFor('nope');
     }
 }
