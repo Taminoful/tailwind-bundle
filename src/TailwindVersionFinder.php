@@ -54,10 +54,17 @@ final class TailwindVersionFinder
      */
     private function tags(int $page = 1): iterable
     {
+        $options = ['query' => ['page' => $page]];
+
+        // authenticate the call when a GitHub token is available to avoid the
+        // low rate limit applied to anonymous requests (60 requests per hour,
+        // shared by IP address)
+        if (null !== $token = self::githubToken()) {
+            $options['auth_bearer'] = $token;
+        }
+
         $releases = $this->httpClient
-            ->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases', [
-                'query' => ['page' => $page],
-            ])
+            ->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases', $options)
             ->toArray()
         ;
 
@@ -70,5 +77,70 @@ final class TailwindVersionFinder
         }
 
         yield from $this->tags(++$page);
+    }
+
+    /**
+     * Looks for a GitHub token, first in the usual environment variables, then
+     * in Composer's authentication config (the "github-oauth" token developers
+     * commonly already have set up).
+     */
+    private static function githubToken(): ?string
+    {
+        foreach (['GITHUB_TOKEN', 'GH_TOKEN'] as $name) {
+            if (null !== $token = self::readEnv($name)) {
+                return $token;
+            }
+        }
+
+        return self::composerGithubToken();
+    }
+
+    private static function composerGithubToken(): ?string
+    {
+        $candidates = [];
+
+        if (null !== $composerAuth = self::readEnv('COMPOSER_AUTH')) {
+            $candidates[] = $composerAuth;
+        }
+
+        foreach (self::composerAuthFiles() as $file) {
+            if (is_file($file) && false !== $contents = @file_get_contents($file)) {
+                $candidates[] = $contents;
+            }
+        }
+
+        foreach ($candidates as $json) {
+            $data = json_decode($json, true);
+            $token = $data['github-oauth']['github.com'] ?? null;
+
+            if (\is_string($token) && '' !== $token) {
+                return $token;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function composerAuthFiles(): array
+    {
+        if (null !== $composerHome = self::readEnv('COMPOSER_HOME')) {
+            return [$composerHome.'/auth.json'];
+        }
+
+        if (null !== $home = self::readEnv('HOME')) {
+            return [$home.'/.composer/auth.json', $home.'/.config/composer/auth.json'];
+        }
+
+        return [];
+    }
+
+    private static function readEnv(string $name): ?string
+    {
+        $value = $_SERVER[$name] ?? $_ENV[$name] ?? getenv($name);
+
+        return \is_string($value) && '' !== $value ? $value : null;
     }
 }
