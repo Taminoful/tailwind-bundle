@@ -69,6 +69,7 @@ final class TailwindInitCommand extends TailwindConfigCommand
         $this->addTailwindDirectives($io, $builder);
 
         $io->success('Tailwind CSS is ready to use!');
+        $io->warning('Run "php bin/console cache:clear" so the updated configuration is picked.');
 
         return self::SUCCESS;
     }
