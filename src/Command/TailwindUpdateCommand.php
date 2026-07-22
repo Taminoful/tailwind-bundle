@@ -65,7 +65,8 @@ final class TailwindUpdateCommand extends TailwindConfigCommand
         $this->writeBundleConfig($bundleConfig);
 
         $io->success(\sprintf('Tailwind CSS updated from %s to %s!', $this->binaryVersion, $latestVersion));
-        $io->note('If "tailwind:build --watch" is running, restart it to use the new version.');
+        $io->warning('Run "php bin/console cache:clear" so the updated configuration is picked up.');
+        $io->warning('If "tailwind:build --watch" is running, restart it to use the new version.');
 
         return self::SUCCESS;
     }
