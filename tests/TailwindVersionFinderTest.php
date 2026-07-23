@@ -10,7 +10,6 @@
 namespace Symfonycasts\TailwindBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfonycasts\TailwindBundle\TailwindVersionFinder;
 
 class TailwindVersionFinderTest extends TestCase
@@ -20,13 +19,7 @@ class TailwindVersionFinderTest extends TestCase
      */
     public function testGetLatestVersion(string $version, int $expectedMajor): void
     {
-        $options = [];
-
-        if ($_SERVER['GITHUB_TOKEN'] ?? null) {
-            $options['auth_bearer'] = $_SERVER['GITHUB_TOKEN'];
-        }
-
-        $versionDetector = new TailwindVersionFinder(HttpClient::create($options));
+        $versionDetector = new TailwindVersionFinder();
         $latestVersion = $versionDetector->latestVersionFor($version);
 
         $this->assertStringStartsWith('v'.$expectedMajor.'.', $latestVersion);
