@@ -169,6 +169,36 @@ class TailwindBinaryTest extends TestCase
         $this->assertGreaterThan(0, filesize($binaryFile));
     }
 
+    public function testEmptyDownloadThrowsDescriptiveException(): void
+    {
+        $binaryDownloadDir = __DIR__.'/fixtures/download';
+
+        $fs = new Filesystem();
+        if (file_exists($binaryDownloadDir)) {
+            $fs->remove($binaryDownloadDir);
+        }
+        $fs->mkdir($binaryDownloadDir);
+
+        // no checksums (404) + an empty binary body, as antivirus quarantine leaves it
+        $client = new MockHttpClient([
+            new MockResponse('', ['http_code' => 404]),
+            new MockResponse(''),
+        ]);
+
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'v4.1.16', null, $client, 'linux-x64');
+        $binaryFile = $binaryDownloadDir.'/v4.1.16/tailwindcss-linux-x64';
+
+        try {
+            $binary->createProcess(['-i', 'fake.css']);
+            $this->fail('Expected a RuntimeException for the empty download.');
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('antivirus', $e->getMessage());
+        }
+
+        // the empty file must have been removed
+        $this->assertFileDoesNotExist($binaryFile);
+    }
+
     public function testIntegrityFailureDeletesFileAndThrows(): void
     {
         $binaryDownloadDir = __DIR__.'/fixtures/download';

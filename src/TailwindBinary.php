@@ -92,9 +92,6 @@ final class TailwindBinary
         $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName($this->getRawVersion(), $this->binaryPlatform);
 
         if (!is_file($this->binaryPath) || 0 === filesize($this->binaryPath)) {
-            if (is_file($this->binaryPath)) {
-                unlink($this->binaryPath);
-            }
             $this->downloadExecutable();
         }
 
@@ -142,6 +139,14 @@ final class TailwindBinary
         $this->output?->writeln('');
         // make file executable
         chmod($targetPath, 0777);
+
+        // getBinaryPath() may have cached this path's size (0) before the re-download
+        clearstatcache(true, $targetPath);
+        if (0 === filesize($targetPath)) {
+            unlink($targetPath);
+
+            throw new \RuntimeException(\sprintf('The downloaded TailwindCSS binary at "%s" is empty (0 bytes). On Windows this is usually antivirus software blocking or quarantining the download; add an exclusion for the binary and try again. The empty file has been removed.', $targetPath));
+        }
 
         if (null !== $expectedHash && !hash_equals($expectedHash, $actualHash = hash_file('sha256', $targetPath))) {
             unlink($targetPath);
