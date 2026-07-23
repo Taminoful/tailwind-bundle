@@ -10,6 +10,7 @@
 namespace Symfonycasts\TailwindBundle;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\ScopingHttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -25,7 +26,18 @@ final class TailwindVersionFinder
 
     public function __construct(?HttpClientInterface $httpClient = null)
     {
-        $this->httpClient = $httpClient ?? HttpClient::create();
+        $httpClient ??= HttpClient::create();
+
+        // authenticate calls when a GitHub token is available to avoid the low
+        // rate limit applied to anonymous requests (60 requests per hour,
+        // shared by IP address)
+        if (null !== $token = self::githubToken()) {
+            $httpClient = ScopingHttpClient::forBaseUri($httpClient, 'https://api.github.com/', [
+                'auth_bearer' => $token,
+            ]);
+        }
+
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -54,17 +66,10 @@ final class TailwindVersionFinder
      */
     private function tags(int $page = 1): iterable
     {
-        $options = ['query' => ['page' => $page]];
-
-        // authenticate the call when a GitHub token is available to avoid the
-        // low rate limit applied to anonymous requests (60 requests per hour,
-        // shared by IP address)
-        if (null !== $token = self::githubToken()) {
-            $options['auth_bearer'] = $token;
-        }
-
         $releases = $this->httpClient
-            ->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases', $options)
+            ->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases', [
+                'query' => ['page' => $page],
+            ])
             ->toArray()
         ;
 
